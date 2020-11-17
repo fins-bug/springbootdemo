@@ -10,7 +10,10 @@
     <version>1.0-SNAPSHOT</version>
     <!-- 模块依赖 -->
     <modules>
-        <module>auth-jwt</module>
+        <module>security-jwt</module>
+        <module>security-oauth2</module>
+        <module>user-manager</module>
+        <module>common</module>
     </modules>
 
     <!-- SpringBoot版本 -->

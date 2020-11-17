@@ -1,0 +1,11 @@
+server:
+  port: 60001
+
+spring:
+  application:
+    name: auth
+
+jwt:
+  secret: finsbug
+  expiration: 7200000
+  token: Authorization
