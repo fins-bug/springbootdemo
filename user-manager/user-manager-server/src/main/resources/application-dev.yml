@@ -1,6 +1,0 @@
-server:
-  port: 60002
-
-spring:
-  application:
-    name: auth
