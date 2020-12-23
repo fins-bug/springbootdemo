@@ -23,11 +23,30 @@ public class StreamBasic {
         exampleData3.put("id", 10001);
         exampleData3.put("value", 100010000L);
 
+
+        List<Car> cars = new ArrayList<>();
+        cars.add(new Car("a"));
+        cars.add(new Car("b"));
+
+        cars.forEach(car -> {
+            car.name = "111";
+        });
+        cars.forEach(car -> {
+            System.out.println(car.name);
+        });
+
+
         // 数组的基本操作
 //        numberOperation(exampleData2);
 
         // reduce缩减操作
-        reduceOperation(exampleData2);
+//        reduceOperation(exampleData2);
+    }
+    static class Car {
+        private  String name;
+        public Car(String name) {
+            this.name = name;
+        }
     }
 
     /**
@@ -44,11 +63,12 @@ public class StreamBasic {
                 .filter(Objects::nonNull)
                 .reduce(2, (o1, o2) -> o1*o2)).ifPresent(System.out::println);
 
-        // TODO: 还有第三种reduce的方法
+        // 还有第三种reduce的方法, 只在并行流的情况下会使用combine的lambda函数
         // 1 1 -> 1
         // 1 2 -> 2
         // 2 3 -> 6
         // 6 4 -> 24
+        // TODO: 为什么并行流最后不会影响到输出的结果
         List<Integer> integerList = Arrays.asList(1,2,3,4, null);
         Optional.of(integerList
                 .parallelStream()
