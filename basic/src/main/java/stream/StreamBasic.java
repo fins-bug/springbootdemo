@@ -1,28 +1,80 @@
 package stream;
 
 
-import org.assertj.core.util.Maps;
+import common.StaticProcessor;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @description 基础的stream用法
  * @author fins
  * @date 2020/12/18
  **/
-public class StreamBasic {
+public class StreamBasic extends StaticProcessor {
 
     public static void main(String[] args) {
-        // SourceData
-        List<String> exampleData1 = Arrays.asList("f", "a", "c", "b", "g");
-        List<Integer> exampleData2 = Arrays.asList(56, 3, -67, -78, 3, 56, null, 45, 100);
-        Map<String, Object> exampleData3 = new HashMap<>(80);
-        exampleData3.put("mac", "aa:vv:ss:ee:ff:bb");
-        exampleData3.put("id", 10001);
-        exampleData3.put("value", 100010000L);
 
+        // 数组的基本操作
+        StreamBasic.process(StreamBasic.class, "numberOperation", false);
+
+        // reduce缩减操作
+        StreamBasic.process(StreamBasic.class, "reduceOperation", false);
+
+        // 验证foreach里边是不是引用
+        StreamBasic.process(StreamBasic.class, "checkForeachIsReference", false);
+
+        // flatMap的操作
+        StreamBasic.process(StreamBasic.class, "flatMapOperation", false);
+
+        // collects的操作
+        StreamBasic.process(StreamBasic.class, "collectOperation", true);
+    }
+
+    /**
+     * collect操作
+     */
+    public static void collectOperation() {
+        List<Map<String, String>>  mapList = new ArrayList<>();
+        Map<String, String> map1 = new HashMap<>(20);
+        map1.put("a1", "1");
+        map1.put("b1", "2");
+        mapList.add(map1);
+        Map<String, String> map2 = new HashMap<>(20);
+        map1.put("a2", "1");
+        map1.put("b2", "2");
+        mapList.add(map2);
+
+        Map<String,String> afterMap = mapList.stream()
+                .collect(() -> new HashMap<>(), HashMap::putAll, (m3, m4) -> {});
+
+    }
+
+    /**
+     * flatMap的操作
+     */
+    public static void flatMapOperation() {
+        // 现在想把 List<Map<String, String>> 将所有map的key提取出来变成List<String>
+        List<Map<String, String>>  mapList = new ArrayList<>();
+        Map<String, String> map1 = new HashMap<>(20);
+        map1.put("a1", "1");
+        map1.put("b1", "2");
+        mapList.add(map1);
+        Map<String, String> map2 = new HashMap<>(20);
+        map1.put("a2", "1");
+        map1.put("b2", "2");
+        mapList.add(map2);
+
+        mapList.stream()
+                .flatMap(map -> map.keySet().stream())
+                .collect(Collectors.toList())
+                .forEach(System.out::println);
+    }
+
+    /**
+     * 验证修改forEach中的数组元素会不会对源数组进行修改
+     */
+    public static void checkForeachIsReference() {
 
         List<Car> cars = new ArrayList<>();
         cars.add(new Car("a"));
@@ -34,14 +86,13 @@ public class StreamBasic {
         cars.forEach(car -> {
             System.out.println(car.name);
         });
+        // 结果是再foreach里去修改对象是会影响到原数组的
 
-
-        // 数组的基本操作
-//        numberOperation(exampleData2);
-
-        // reduce缩减操作
-//        reduceOperation(exampleData2);
     }
+
+    /**
+     * Car
+     */
     static class Car {
         private  String name;
         public Car(String name) {
@@ -51,9 +102,10 @@ public class StreamBasic {
 
     /**
      * 缩减操作
-     * @param exampleData2
      */
-    private static void reduceOperation(List<Integer> exampleData2) {
+    public static void reduceOperation() {
+
+        List<Integer> exampleData2 = Arrays.asList(56, 3, -67, -78, 3, 56, null, 45, 100);
         exampleData2.stream()
                 .filter(Objects::nonNull)
                 .reduce((i1, i2) -> i1+i2*2)
@@ -98,9 +150,9 @@ public class StreamBasic {
 
     /**
      * 数字数组操作
-     * @param exampleData2
      */
-    private static void numberOperation(List<Integer> exampleData2) {
+    public static void numberOperation() {
+        List<Integer> exampleData2 = Arrays.asList(56, 3, -67, -78, 3, 56, null, 45, 100);
         // 除去空值并寻找最小值
         Optional<Integer> minInteger = exampleData2.stream().filter(Objects::nonNull).min(Integer::compareTo);
         minInteger.ifPresent(System.out::println);
